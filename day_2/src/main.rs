@@ -11,7 +11,7 @@ enum Direction {
 }
 
 type Cursor = usize;
-type Numpad = Vec<char>;
+type Numpad = Vec<Option<char>>;
 
 fn main() {
     // read input from the file
@@ -25,14 +25,15 @@ fn main() {
     let mut digits : Vec<char> = Vec::new();
 
     // recreate the keypad with three rows of three keys
-    let keypad : Numpad = vec!['1','2','3','4','5','6','7','8','9'];
+    let keypad : Numpad = vec![Some('1'), Some('2'), Some('3'),
+                               Some('4'), Some('5'), Some('6'),
+                               Some('7'), Some('8'), Some('9')];
 
     // and lets create our cursor, starting at the Five key
     let mut cursor : Cursor = 4;
 
     // convert characters to directions
     for line in lines {
-
         let sequence : Vec<Direction> = line.chars().map(char_to_direction).collect();
 
         let updated_cursor_after_sequence : Cursor = sequence.iter().fold(cursor, |prev_cursor, dir| { 
@@ -86,5 +87,5 @@ fn move_cursor(numpad : &Numpad, cursor: &Cursor, dir : &Direction) -> Cursor {
 }
 
 fn digit_for_cursor(numpad : &Numpad, cursor : &Cursor) -> char {
-   numpad.get(*cursor).unwrap().to_owned()
+   numpad.get(*cursor).unwrap().unwrap().to_owned()
 }
