@@ -25,12 +25,20 @@ fn main() {
     let mut digits : Vec<char> = Vec::new();
 
     // recreate the keypad with three rows of three keys
-    let keypad : Numpad = vec![Some('1'), Some('2'), Some('3'),
-                               Some('4'), Some('5'), Some('6'),
-                               Some('7'), Some('8'), Some('9')];
+    // let keypad_part_a : Numpad = vec![Some('1'), Some('2'), Some('3'),
+    //                            Some('4'), Some('5'), Some('6'),
+    //                            Some('7'), Some('8'), Some('9')];
+
+    let keypad : Numpad = vec![
+        None,        None,       Some('1'),   None,       None,
+        None,        Some('2'),  Some('3'),   Some('4'),  None,
+        Some('5'),   Some('6'),  Some('7'),   Some('8'),  Some('9'),
+        None,        Some('A'),  Some('B'),   Some('C'),  None,
+        None,        None,       Some('D'),   None,       None
+    ];
 
     // and lets create our cursor, starting at the Five key
-    let mut cursor : Cursor = 4;
+    let mut cursor : Cursor = 10;
 
     // convert characters to directions
     for line in lines {
@@ -66,24 +74,44 @@ fn move_cursor(numpad : &Numpad, cursor: &Cursor, dir : &Direction) -> Cursor {
     match *dir {
         Direction::Left => {
             // left most options? Cant move left any further..
-            if cursor.rem(row_length) == 0 { *cursor } else { cursor -1 }
+            if cursor.rem(row_length) == 0 || !is_valid(&numpad, &(cursor - 1)) { 
+                *cursor 
+            } else { 
+                cursor - 1 
+            }
         },
 
         Direction::Right => {
             // right most options? Cant move right any further..
-            if (cursor).rem(row_length) == row_length - 1 { *cursor } else { cursor +1 }
+            if (cursor).rem(row_length) == row_length - 1 || !is_valid(&numpad, &(cursor + 1)) { 
+                *cursor 
+            } else { 
+                cursor + 1 
+            }
         },
 
         Direction::Up => {
             // only can move up if theres another row up top
-            if *cursor > row_length - 1 { cursor - row_length } else { *cursor }
+            if *cursor > row_length - 1 && is_valid(&numpad, &(cursor - row_length)) { 
+                cursor - row_length 
+            } else { 
+                *cursor 
+            }
         },
 
         Direction::Down => {
             // only can move down if theres another row below
-            if *cursor < numpad.len() - row_length { cursor + row_length } else { *cursor }
+            if *cursor < numpad.len() - row_length && is_valid(&numpad, &(cursor + row_length)){ 
+                cursor + row_length 
+            } else { 
+                *cursor 
+            }
         },
     }
+}
+
+fn is_valid(numpad: &Numpad, cursor : &Cursor) -> bool {
+    numpad.get(*cursor).unwrap().is_some()
 }
 
 fn digit_for_cursor(numpad : &Numpad, cursor : &Cursor) -> char {
