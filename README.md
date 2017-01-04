@@ -6,4 +6,5 @@ This is my attempt at fixing all [Advent Of Code](http://adventofcode.com/2016) 
 - [Day 1](https://github.com/Tmw/advent-of-code-2016/blob/master/day_1/src/main.rs)
 - [Day 2](https://github.com/Tmw/advent-of-code-2016/blob/master/day_2/src/main.rs)
 - [Day 3](https://github.com/Tmw/advent-of-code-2016/blob/master/day_3/src/main.rs)
+- [Day 4](https://github.com/Tmw/advent-of-code-2016/blob/master/day_4/src/main.rs)
 
