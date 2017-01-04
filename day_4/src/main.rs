@@ -53,7 +53,7 @@ impl Room {
     // does checksum match input?
     fn is_valid(&self) -> bool {
         // remove the dashes
-        let undashed_name : &String = &self.name.replace('-', "");
+        let undashed_name : String = self.name.replace('-', "");
 
         // grab the chars as an array
         let mut chars_as_vec : Vec<char> = undashed_name.chars().collect();
