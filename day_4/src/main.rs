@@ -102,7 +102,11 @@ fn main() {
 
     let rooms : Vec<Room> = input.lines().map(|line| {Room::from_line(line)}).collect();
 
-    // assert our test sequence
-    let sum = rooms.iter().filter(|r| {r.is_valid()}).fold(0, |sum, r| { sum + r.sector_id});
+    // grab the valid rooms, and sum the sector id using fold
+    let sum = rooms.iter()
+        .filter(|r| {r.is_valid()})
+        .fold(0, |sum, r| { sum + r.sector_id});
+
+    // print the answer 🎉
     println!("sum: {}", sum);
 }
