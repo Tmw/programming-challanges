@@ -15,6 +15,18 @@ Of the real rooms from the list above, the sum of their sector IDs is 1514.
 
 What is the sum of the sector IDs of the real rooms?
 
+--- Part Two ---
+
+With all the decoy data out of the way, it's time to decrypt this list and get moving.
+
+The room names are encrypted by a state-of-the-art shift cipher, which is nearly unbreakable without the right software. However, the information kiosk designers at Easter Bunny HQ were not expecting to deal with a master cryptographer like yourself.
+
+To decrypt a room name, rotate each letter forward through the alphabet a number of times equal to the room's sector ID. A becomes B, B becomes C, Z becomes A, and so on. Dashes become spaces.
+
+For example, the real name for qzmt-zixmtkozy-ivhz-343 is very encrypted name.
+
+What is the sector ID of the room where North Pole objects are stored?
+
 */
 
 extern crate regex;
@@ -93,6 +105,26 @@ impl Room {
         // a room is valid once the two checksums match
         return checksum == self.checksum
     }
+
+    fn decipher(&self) -> String {
+        let undashed_name = self.name.replace('-', " ");
+        rot(undashed_name, self.sector_id as usize)
+    }
+}
+
+// basic ceasar cipher implementation
+fn rot(input : String, rotations : usize) -> String {
+    let alphabet  = "abcdefghijklmnopqrstuvwxyz".to_string();
+
+    input.chars()
+        .map(|c| {
+            if c == ' ' { return c; }
+            let new_index = alphabet.find(c).unwrap() + rotations;
+            alphabet.chars().cycle().nth(new_index).unwrap()
+        })
+        .collect()
+
+        //  ^ have you seen this cycle thing? 😯
 }
 
 fn main() {
@@ -102,11 +134,36 @@ fn main() {
 
     let rooms : Vec<Room> = input.lines().map(|line| {Room::from_line(line)}).collect();
 
-    // grab the valid rooms, and sum the sector id using fold
-    let sum = rooms.iter()
+    // grab the valid rooms
+    let valid_rooms : Vec<&Room> = rooms.iter()
         .filter(|r| {r.is_valid()})
-        .fold(0, |sum, r| { sum + r.sector_id});
+        .collect();
+    
+    // and sum the sector id using fold
+    let sum = valid_rooms.iter().fold(0, |sum, r| { sum + r.sector_id});
+
+    // for part B we're looking for a room where north pole objects are stored
+    let deciphered_names : Vec<(isize, String)> = valid_rooms.iter()
+        .map(|r| (r.sector_id, r.decipher() ) )
+        .collect();
+
+    // print what can be found where 💪
+    for (sector_id, name) in deciphered_names {
+        println!("{}can be found in sector{}", name, sector_id);
+    }
 
     // print the answer 🎉
     println!("sum: {}", sum);
+}
+
+#[test]
+fn test_rot() {
+    let res = rot("mec".to_string(), 10);
+    assert_eq!(res, "wom".to_string())
+}
+
+#[test]
+fn test_rot_for_realsies(){
+    let res = rot("qzmt zixmtkozy ivhz".to_string(), 343);
+    assert_eq!(res, "very encrypted name".to_string());
 }
