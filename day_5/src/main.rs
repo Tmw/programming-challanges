@@ -22,6 +22,9 @@ use crypto::md5::Md5;
 use crypto::digest::Digest;
 
 fn main() {
+
+    let puzzle_input = "reyedfim";
+
     // make an empty string to store our password in
     let mut pass = String::new();
 
@@ -31,7 +34,7 @@ fn main() {
         let mut hash = Md5::new();
 
         // concat our puzzle input with the index
-        let input : &str = &format!("reyedfim{}", i);
+        let input : &str = &format!("{}{}", puzzle_input, i);
 
         // the the concatenated string as input for our hasher
         hash.input_str(&input);
