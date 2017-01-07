@@ -15,54 +15,92 @@ The third time a hash starts with five zeroes is for abc5278568, discovering the
 In this example, after continuing this search a total of eight times, the password is 18f47a30.
 
 Given the actual Door ID, what is the password?
+
+--- Part Two ---
+
+As the door slides open, you are presented with a second door that uses a slightly more inspired security mechanism. Clearly unimpressed by the last version (in what movie is the password decrypted in order?!), the Easter Bunny engineers have worked out a better solution.
+
+Instead of simply filling in the password from left to right, the hash now also indicates the position within the password to fill. You still look for hashes that begin with five zeroes; however, now, the sixth character represents the position (0-7), and the seventh character is the character to put in that position.
+
+A hash result of 000001f means that f is the second character in the password. Use only the first result for each position, and ignore invalid positions.
+
+For example, if the Door ID is abc:
+
+The first interesting hash is from abc3231929, which produces 0000015...; so, 5 goes in position 1: _5______.
+In the previous method, 5017308 produced an interesting hash; however, it is ignored, because it specifies an invalid position (8).
+The second interesting hash is at index 5357525, which produces 000004e...; so, e goes in position 4: _5__e___.
+You almost choke on your popcorn as the final character falls into place, producing the password 05ace8e3.
+
+Given the actual Door ID and this new method, what is the password? Be extra proud of your solution if it uses a cinematic "decrypting" animation.
 */
 
 extern crate crypto;
 use crypto::md5::Md5;
 use crypto::digest::Digest;
 
-fn main() {
+fn hash(input : &str) -> String {
+    let mut hash = Md5::new();
+    hash.input_str(&input);
+    hash.result_str()
+}
 
-    let puzzle_input = "reyedfim";
-
-    // make an empty string to store our password in
-    let mut pass = String::new();
+fn solve_part_a(puzzle_input : &str){
+    let mut pass = Vec::new();
 
     // iterate forever until we break
     for i in 0..std::u64::MAX {
-        // make a new MD5 hasher
-        let mut hash = Md5::new();
-
-        // concat our puzzle input with the index
         let input : &str = &format!("{}{}", puzzle_input, i);
+        let result = hash(&input);
 
-        // the the concatenated string as input for our hasher
-        hash.input_str(&input);
+        if result.starts_with("00000") {
+            pass.push(result.chars().nth(5).unwrap());
 
-        // grab the result from the hash
-        let result = hash.result_str();
-
-        // grab the first 5 characters of the calculated hash
-        let res_check = &result[..5];
-
-        // if it starts with five zeroes, we have a match
-        if res_check == "00000" {
-
-            // what is the first character after those five zeroes?
-            let next_char : char = result.chars().nth(5).unwrap();
-            println!("found {:?}", next_char);
-
-            // well thats part of our password. Lets store it 😜
-            pass.push(next_char);
-
-            // we don't quit until our calculated password is 8 character long
+            // once the pass reaches 8 chars, break
             if pass.len() == 8 {
                 break;
             }
-
         }
     }
 
     // we got em. 😏
-    println!("cracked the pass: {}", pass);
+    println!("[PART A] cracked pass: {:?}", pass);
+}
+
+fn solve_part_b(puzzle_input : &str){
+
+    let mut pass = vec![None; 8];
+
+    // iterate forever until we break
+    for i in 0..std::u64::MAX {
+        let input : &str = &format!("{}{}", puzzle_input, i);
+        let result = hash(&input);
+
+        if result.starts_with("00000") {
+            if let Some(location) = result.chars().nth(5).unwrap().to_digit(10) {
+                let location = location as usize;
+                if location > 7 { continue };
+                if pass.get(location).unwrap().is_some() { continue; }
+
+                let character = result.chars().nth(6).unwrap();
+                pass[location] = result.chars().nth(6);
+
+                println!("found character {} for location {}", character, location);
+            }
+        }
+
+        // once all characters are filled in, break
+        if pass.iter().all(|c| c.is_some()) {
+            break;
+        }
+    }
+
+    // we got em. 😏
+    let pass_string : String = pass.iter().map(|c| c.unwrap()).collect();
+    println!("[PART B] cracked the pass: {:?}", pass_string);
+}
+
+fn main() {
+    const PUZZLE_INPUT : &'static str = "reyedfim";
+    solve_part_a(PUZZLE_INPUT);
+    solve_part_b(PUZZLE_INPUT);
 }
