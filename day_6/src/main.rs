@@ -45,7 +45,6 @@ use std::fs::File;
 use std::collections::HashMap;
 
 type Column   = HashMap<char, usize>;
-type Register = Vec<Column>;
 
 fn main() {
     let mut f = File::open("input.txt").unwrap();
@@ -53,9 +52,7 @@ fn main() {
     f.read_to_string(&mut input).ok();
 
     let line_length = input.chars().count() / input.lines().count();
-    println!("line_length:{}", line_length);
-
-    let mut columns : Register = Vec::with_capacity(line_length);
+    let mut columns : Vec<Column> = Vec::with_capacity(line_length);
 
     for _ in 0..line_length {
         columns.push(Column::new())
