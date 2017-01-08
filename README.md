@@ -9,4 +9,5 @@ This is my attempt at fixing all [Advent Of Code](http://adventofcode.com/2016) 
 - [Day 4](https://github.com/Tmw/advent-of-code-2016/blob/master/day_4/src/main.rs)
 - [Day 5](https://github.com/Tmw/advent-of-code-2016/blob/master/day_5/src/main.rs)
 - [Day 6](https://github.com/Tmw/advent-of-code-2016/blob/master/day_6/src/main.rs)
+- [Day 7](https://github.com/Tmw/advent-of-code-2016/blob/master/day_7/src/main.rs)
 
