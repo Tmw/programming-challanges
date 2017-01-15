@@ -65,8 +65,8 @@ mod contains_abba {
 #[cfg(test)]
 mod validate {
 
-    use ip_address::{ IPAddress, IPAddressValidator };
     use part_a_validator::PartAValidator;
+    use ip_address::{ IPAddress, IPAddressValidator };
 
     #[test]
     fn it_should_return_true_for_valid_addresses() {

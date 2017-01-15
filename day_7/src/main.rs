@@ -34,11 +34,14 @@ extern crate lazy_static;
 
 mod ip_address;
 mod part_a_validator;
+mod part_b_validator;
 
 use std::io::prelude::*;
 use std::fs::File;
 use ip_address::IPAddress;
+
 use part_a_validator::PartAValidator;
+use part_b_validator::PartBValidator;
 
 
 fn main() {
@@ -54,4 +57,9 @@ fn main() {
     let part_a_validator = PartAValidator{};
     let answer_a: Vec<&IPAddress> = addresses.iter().filter(|a| a.is_valid(&part_a_validator)).collect();
     println!("[PART A] answer: {}", answer_a.len());
+
+    // figure out answer B
+    let part_b_validator = PartBValidator{};
+    let answer_b: Vec<&IPAddress> = addresses.iter().filter(|a| a.is_valid(&part_b_validator)).collect();
+    println!("[PART B] answer: {}", answer_b.len());
 }
