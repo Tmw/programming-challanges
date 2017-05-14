@@ -26,4 +26,7 @@ fn main() {
 
     // answer to part A
     println!("Number of pixels lit is: {:?}", display.pixels_lit());
+
+    // print answer to part B
+    display.print();
 }

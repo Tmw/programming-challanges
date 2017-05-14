@@ -46,6 +46,26 @@ impl Display {
         }
     }
 
+    pub fn print(&self) {
+        let chars: &Vec<char> = &self.grid
+            .to_vec()
+            .iter()
+            .map(|v| if *v { '#' } else { ' ' })
+            .collect();
+
+        for (idx, c) in chars.iter().enumerate() {
+            if idx % &self.grid.x == 0 {
+                print!("{}", "|\n");
+            }
+
+            if idx % 5 == 0 {
+                print!("{}", "|");
+            }
+
+            print!("{}", c);
+        }
+    }
+
     pub fn pixels_lit(&self) -> usize {
         let data = &self.grid.to_vec();
         let res: Vec<&bool> = data.iter().filter(|px| **px).collect();
