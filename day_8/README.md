@@ -34,10 +34,11 @@ rotate row y=0 by 4 rotates the top row right by four pixels:
 .#.....
 ```
 rotate column x=1 by 1 again rotates the second column down by one pixel, causing the bottom pixel to wrap back to the top:
-
+```
 .#..#.#
 #.#....
 .#.....
+```
 As you can see, this display technology is extremely powerful, and will soon dominate the tiny-code-displaying-screen market. That's what the advertisement on the back of the display tries to convince you, anyway.
 
 There seems to be an intermediate check of the voltage used by the display: after you swipe your card, if the screen did work, how many pixels should be lit?
