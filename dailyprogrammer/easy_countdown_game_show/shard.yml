@@ -1,0 +1,13 @@
+name: countdown
+version: 0.1.0
+
+authors:
+  - Tiemen Waterreus <tiemen@tiemenwaterreus.com>
+
+targets:
+  countdown:
+    main: src/countdown.cr
+
+crystal: 0.23.1
+
+license: MIT
