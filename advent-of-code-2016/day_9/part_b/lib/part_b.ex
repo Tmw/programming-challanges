@@ -31,20 +31,23 @@ defmodule PartB.Parser do
   @regex ~r/\((\d+)x(\d+)\)/
 
   def parse(contents) do
-    {children, remainder} = find_nodes(contents)
-
-    %PartB.Node{
-      contents: remainder,
-      children: Enum.map(children, &parse_children/1),
+    root = %PartB.Node{
+      contents: contents,
+      children: [],
       multiplier: 1
     }
+
+    parse_children(root)
   end
 
-  # node with contents -> node with contents converted to children
   defp parse_children(node) do
     {children, remainder} = find_nodes(node.contents)
 
-    %PartB.Node{node | children: Enum.map(children, &parse_children/1), contents: remainder}
+    %PartB.Node{
+      node
+      | children: Enum.map(children, &parse_children/1),
+        contents: remainder
+    }
   end
 
   defp find_nodes(contents, nodes \\ []) do
