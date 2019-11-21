@@ -131,12 +131,14 @@ mod node_tests {
 
     #[test]
     fn test_from_str_with_subnodes() {
-        let node : Node = "(10x4)(4x10)FGHI".parse().unwrap();
+        let node : Node = "(10x4)(4x10)FGHI".parse().unwrap(); // total length should be 160
 
         // outer node
         assert_eq!(node.content_length, 0);
         assert_eq!(node.multiplier, 4);
         assert_eq!(node.nodes.len(), 1);
+
+        println!("{:?}", node.nodes);
 
         // inner node
         let inner_node = node.nodes.first().unwrap();
