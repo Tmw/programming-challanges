@@ -9,13 +9,13 @@ defmodule PartB.Solver do
   # Where can we find the challange input?
   @challange_input_path "lib/input.txt"
 
-  alias PartB.Parser
+  alias PartB.{Calculator, Parser}
 
   def solve do
     @challange_input_path
     |> read_challange()
     |> Parser.parse()
-    |> IO.inspect(label: "Got parsed tree")
+    |> Calculator.calculate()
   end
 
   defp read_challange(path) do
@@ -110,5 +110,21 @@ defmodule PartB.Parser do
         # just return nil as the node and the remainder of the chunk as is.
         {nil, chunk}
     end
+  end
+end
+
+defmodule PartB.Calculator do
+  def calculate(node) do
+    # calculate the node's own length
+    own_length = String.length(node.contents)
+
+    # grab the lengths from the children, summed
+    children_lengths =
+      node.children
+      |> Enum.map(&calculate/1)
+      |> Enum.sum()
+
+    # add the two and multiply by the multiplier
+    (own_length + children_lengths) * node.multiplier
   end
 end
