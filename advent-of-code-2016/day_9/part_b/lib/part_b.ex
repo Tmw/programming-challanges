@@ -31,18 +31,26 @@ defmodule PartB.Parser do
   @regex ~r/\((\d+)x(\d+)\)/
 
   def parse(contents) do
+    # start with a single (_root_) node with no children (yet) and a multipler
+    # of one. Assign contents param as contents of the Node and pass it on
+    # to `parse_children/1` to parse the contents into child nodes.
     root = %PartB.Node{
       contents: contents,
       children: [],
       multiplier: 1
     }
 
+    # build child nodes
     parse_children(root)
   end
 
   defp parse_children(node) do
+    # find all the nodes in the contents but also collect the remainder.
+    # The remainder are the characters that will end up being repeated
     {children, remainder} = find_nodes(node.contents)
 
+    # update the passed in node with the children we've found and
+    # the remainder of the characters.
     %PartB.Node{
       node
       | children: Enum.map(children, &parse_children/1),
@@ -51,17 +59,30 @@ defmodule PartB.Parser do
   end
 
   defp find_nodes(contents, nodes \\ []) do
+    # find nodes will iterate over the string and find all the nodes that
+    # are embedded in them. It will recurse as long as it can find nodes. Its
+    # terminal state is when there are no more nodes in the remainder of
+    # characters; it will return all the nodes and the remainder of characters
+    # as a tuple.
+
     case find_node(contents) do
       {nil, rest} ->
         # found all possible nodes; return current state
         {nodes, rest}
 
       {node, rest} ->
+        # probably more nodes; recurse with remainder of characters
         find_nodes(rest, nodes ++ [node])
     end
   end
 
   defp find_node(chunk) do
+    # this function will match the chunk of string passed in to match
+    # on the pattern "( <digit> x <digit> )". It will parse the digits and
+    # return the subslice as denoted by the first digit. This substring will
+    # be removed from the original string; turned into a `%PartB.Node{}` struct
+    # and returned as is.
+
     case Regex.run(@regex, chunk) do
       [token_string, number_of_chars, multiplier] ->
         number_of_chars = String.to_integer(number_of_chars)
