@@ -1,21 +1,11 @@
 # PartB
 
-**TODO: Add description**
+Cracked part B of Advent of Code 2016; Day 9, part B.
 
-## Installation
+## Run
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `part_b` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:part_b, "~> 0.1.0"}
-  ]
-end
+```bash
+iex -S mix
+iex> PartB.Solver.solve
+11107527530
 ```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/part_b](https://hexdocs.pm/part_b).
-
