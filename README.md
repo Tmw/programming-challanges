@@ -4,7 +4,7 @@ This is where is save the programming challanges I've tried to solve. :)
 
 ## Advent Of Code 2016
 
-This is my attempt at fixing all [Advent Of Code](http://adventofcode.com/2016) challanges. I know, I know. Advent is quite some time ago now but what gives, it still seems like a fun challange to me. Also note that I'm new to [Rust](http://rust-lang.org) and I'm using these challanges to get familiar with it so the code is probably quite terrible ;)
+This is my attempt at solving [Advent Of Code 2016](http://adventofcode.com/2016) challanges.
 
 - [Day 1](advent-of-code-2016/day_1/src/main.rs)
 - [Day 2](advent-of-code-2016/day_2/src/main.rs)
@@ -15,8 +15,10 @@ This is my attempt at fixing all [Advent Of Code](http://adventofcode.com/2016) 
 - [Day 7](advent-of-code-2016/day_7/src/main.rs)
 - [Day 8](advent-of-code-2016/day_8)
 - [Day 9](advent-of-code-2016/day_9)
+- [Day 10](advent-of-code-2016/day_10)
 
 ## /r/dailyprogrammer
+
 Attempts to solve challanges over at [/r/dailyprogrammer](https://reddit.com/r/dailyprogrammer)
 
 - [[2017-06-05] Challenge #318 [Easy] Countdown Game Show](dailyprogrammer/easy_countdown_game_show/src/countdown.cr)
