@@ -3,6 +3,11 @@ defmodule Microchip do
 end
 
 defimpl Validity, for: Microchip do
+  @moduledoc """
+  A microchip is fried when it is in the same room as a generator
+  of another kind, unless its own type generator is present.
+  """
+
   def valid?(%Microchip{identifier: identifier}, neighbours) do
     # if the chips is paired with its own generator, all is fine.
     contains_generator_of_own_kind =
