@@ -8,10 +8,12 @@ defmodule Day11 do
   def solve do
     state = get_initial_state()
 
-    state
-    |> State.next_states()
+    valid_next_states = State.valid_next_states(state)
 
-    Renderer.render(state)
+    Enum.each(valid_next_states, fn state ->
+      Renderer.render(state)
+      IO.puts("------------------------")
+    end)
   end
 
   def get_initial_state do

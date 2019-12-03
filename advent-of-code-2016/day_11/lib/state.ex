@@ -34,11 +34,16 @@ defmodule State do
     %State{state | elevator_location: new_elevator_location, floors: updated_floors}
   end
 
-  # `next_states/1` returns, given a state, all its possible next states
-  # TODO: filter out the ones that are not valid.
-  def next_states(%State{} = state) do
-    actions = possible_actions(state)
-    Enum.map(actions, &State.apply(state, &1))
+  def is_valid?(%State{floors: floors}) do
+    Enum.all?(floors, &Floor.is_valid?/1)
+  end
+
+  # `next_states/1` returns, given a state, all its valid next states.
+  def valid_next_states(%State{} = state) do
+    state
+    |> possible_actions()
+    |> Enum.map(&State.apply(state, &1))
+    |> Enum.filter(&State.is_valid?/1)
   end
 
   defp possible_actions(%State{} = state) do

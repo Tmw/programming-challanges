@@ -27,4 +27,8 @@ defmodule Floor do
   def remove(%Floor{} = floor, item) do
     remove(floor, [item])
   end
+
+  def is_valid?(%Floor{slots: slots}) do
+    Enum.all?(slots, &Validity.valid?(&1, slots))
+  end
 end
