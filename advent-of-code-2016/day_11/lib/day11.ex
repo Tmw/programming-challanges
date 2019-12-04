@@ -10,45 +10,34 @@ defmodule Day11 do
     search([state])
   end
 
-  def search([]), do: :end_not_found
+  def search([], _visited), do: :end_not_found
 
-  def search([first | rest] = _open, visited \\ MapSet.new()) do
-    first_hash = State.hash(first)
-
+  # Let's begin with a reasonable breadth first search to see how far that takes us.
+  def search([current | rest] = _open, discovered \\ MapSet.new()) do
     cond do
-      State.is_end?(first) ->
-        {:found, first}
+      State.is_end?(current) ->
+        # NOTE: For part A it should find it 31 hops in.
+        {:found, current}
 
-      MapSet.member?(visited, first_hash) ->
-        # already seen this node; skipping.
-        search(rest, visited)
+      MapSet.member?(discovered, current.hash) ->
+        # seen this node already in a previous pass
+        # ignore and continue with the tail of the open nodes.
+        search(rest, discovered)
 
       true ->
-        # Keep looking..
-        # Pick the nodes that are _connected_ to this one and filter out the ones we already visited.
-        next_hops =
-          State.valid_next_states(first)
-          |> Enum.reject(&MapSet.member?(visited, State.hash(&1)))
+        # new node; grab all its successors (connected nodes) and
+        # drop the ones we for sure already saw.
+        successors =
+          current
+          |> State.valid_next_states()
+          |> Enum.reject(&MapSet.member?(discovered, &1.hash))
 
-        # put the current node in the _visited_ list
-        visited = MapSet.put(visited, first_hash)
-
-        # new_open = Enum.sort_by(next_hops ++ rest, &Map.get(&1, :cost))
-        # Enum.take(new_open, 5)
-        # |> Enum.map(&Map.get(&1, :cost))
-        # |> IO.inspect(label: "first 5 costs")
-
-        new_open = next_hops ++ rest
-        # IO.puts("Keep looking.. #{length(new_open)} options in open list..")
-
-        search(new_open, visited)
+        # then add the current not to the list of discovered nodes
+        # and recurse with the new list comprised of rest + successors
+        discovered = MapSet.put(discovered, current.hash)
+        search(rest ++ new_successors, discovered)
     end
   end
-
-  # TODO: Make sure the `open` list will be ordered by `cost` before recursing.
-
-  # TODO: Have a concept of a trail so we can track which nodes it came from so we can
-  # succesfully work our way back and figure out the shortest route.
 
   def get_initial_state do
     # hardcoded the initial state since parsing the input is not the challanging
