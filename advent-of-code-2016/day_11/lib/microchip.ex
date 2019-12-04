@@ -40,3 +40,9 @@ defimpl Validity, for: Microchip do
     end
   end
 end
+
+defimpl Hashable, for: Microchip do
+  def hash(%Microchip{identifier: identifier}) do
+    "m-#{identifier}"
+  end
+end

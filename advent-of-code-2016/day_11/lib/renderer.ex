@@ -26,6 +26,10 @@ defmodule Renderer do
       render_floor(floor)
       IO.binwrite(:stdio, "\n")
     end
+
+    cost = State.cost(state)
+
+    IO.binwrite(:stdio, "cost for node: #{cost}")
   end
 
   defp render_floor(%Floor{slots: slots}) do

@@ -31,4 +31,16 @@ defmodule Floor do
   def is_valid?(%Floor{slots: slots}) do
     Enum.all?(slots, &Validity.valid?(&1, slots))
   end
+
+  def is_empty?(%Floor{slots: slots}) do
+    MapSet.size(slots) == 0
+  end
+end
+
+defimpl Hashable, for: Floor do
+  def hash(%Floor{slots: slots}) do
+    slots
+    |> Enum.map(&Hashable.hash/1)
+    |> Enum.join()
+  end
 end

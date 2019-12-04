@@ -8,3 +8,9 @@ defimpl Validity, for: Generator do
     true
   end
 end
+
+defimpl Hashable, for: Generator do
+  def hash(%Generator{identifier: identifier}) do
+    "g-#{identifier}"
+  end
+end
