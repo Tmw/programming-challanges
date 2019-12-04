@@ -3,10 +3,11 @@ defmodule State do
           floors: list(any()),
           elevator_location: integer(),
           hops: integer(),
-          cost: integer()
+          cost: integer(),
+          hash: String.t()
         }
   @type direction() :: :up | :down
-  defstruct [:floors, :elevator_location, hops: 0, cost: 999]
+  defstruct [:floors, :elevator_location, hops: 0, cost: 999, hash: ""]
 
   # apply the states
   @spec apply(t(), {direction(), list(any())}) :: t()
@@ -28,7 +29,9 @@ defmodule State do
         hops: state.hops + 1
     }
 
-    Map.update(new_state, :cost, 0, fn _ -> State.cost(new_state) end)
+    new_state
+    |> Map.update(:cost, 0, fn _ -> State.cost(new_state) end)
+    |> Map.update(:hash, "", fn _ -> State.hash(new_state) end)
   end
 
   def apply(state, {:down, items}) do
@@ -47,7 +50,9 @@ defmodule State do
         hops: state.hops + 1
     }
 
-    Map.update(new_state, :cost, 0, fn _ -> State.cost(new_state) end)
+    new_state
+    |> Map.update(:cost, 0, fn _ -> State.cost(new_state) end)
+    |> Map.update(:hash, "", fn _ -> State.hash(new_state) end)
   end
 
   def is_end?(%State{} = state) do
@@ -75,7 +80,11 @@ defmodule State do
   """
   def hash(%State{} = state) do
     # hash function to make a relatively cheap hash of the passed in datastructure.
-    floors = Enum.map(state.floors, &Hashable.hash/1)
+    floors =
+      Enum.map(Enum.with_index(state.floors), fn {floor, floor_no} ->
+        "F#{floor_no}:#{Hashable.hash(floor)}"
+      end)
+
     Base.encode16(:crypto.hash(:sha256, "#{state.elevator_location}:#{floors}"))
   end
 
