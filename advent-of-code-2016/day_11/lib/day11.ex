@@ -76,29 +76,4 @@ defmodule Day11 do
       ]
     }
   end
-
-  def get_test_state do
-    # hardcoded the initial state since parsing the input is not the challanging
-    # part of this puzzle..
-    %State{
-      elevator_location: 2,
-      floors: [
-        Floor.new([]),
-        Floor.new([]),
-        Floor.new([
-          %Generator{identifier: :promethium},
-          %Microchip{identifier: :promethium},
-          %Generator{identifier: :ruthenium},
-          %Microchip{identifier: :ruthenium},
-          %Microchip{identifier: :plutonium},
-          %Microchip{identifier: :strontium},
-          %Generator{identifier: :thulium},
-          %Microchip{identifier: :thulium},
-          %Generator{identifier: :plutonium},
-          %Generator{identifier: :strontium}
-        ]),
-        Floor.new([])
-      ]
-    }
-  end
 end
