@@ -11,7 +11,8 @@ defmodule Day11 do
   end
 
   # Breadth First Search
-  def search([], _visited \\ MapSet.new()), do: :end_not_found
+  def search(current, visited \\ MapSet.new())
+  def search([], _visited), do: :end_not_found
 
   def search([current | rest] = _open, discovered) do
     cond do
