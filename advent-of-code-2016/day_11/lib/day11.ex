@@ -51,7 +51,8 @@ defmodule Day11 do
         Floor.new([
           %Generator{identifier: :thulium},
           %Microchip{identifier: :thulium},
-          %Generator{identifier: :plutonium}
+          %Generator{identifier: :plutonium},
+          %Generator{identifier: :strontium}
         ]),
         Floor.new([
           %Microchip{identifier: :plutonium},
