@@ -10,10 +10,10 @@ defmodule Day11 do
     search([state])
   end
 
-  def search([], _visited), do: :end_not_found
+  # Breadth First Search
+  def search([], _visited \\ MapSet.new()), do: :end_not_found
 
-  # Let's begin with a reasonable breadth first search to see how far that takes us.
-  def search([current | rest] = _open, discovered \\ MapSet.new()) do
+  def search([current | rest] = _open, discovered) do
     cond do
       State.is_end?(current) ->
         # NOTE: For part A it should find it 31 hops in.
@@ -27,7 +27,7 @@ defmodule Day11 do
       true ->
         # new node; grab all its successors (connected nodes) and
         # drop the ones we for sure already saw.
-        successors =
+        new_successors =
           current
           |> State.valid_next_states()
           |> Enum.reject(&MapSet.member?(discovered, &1.hash))
@@ -39,7 +39,35 @@ defmodule Day11 do
     end
   end
 
-  def get_initial_state do
+  def get_initial_state(part \\ :part_b)
+
+  def get_initial_state(:part_a) do
+    # hardcoded the initial state since parsing the input is not the challanging
+    # part of this puzzle..
+    %State{
+      elevator_location: 0,
+      floors: [
+        Floor.new([
+          %Generator{identifier: :thulium},
+          %Microchip{identifier: :thulium},
+          %Generator{identifier: :plutonium}
+        ]),
+        Floor.new([
+          %Microchip{identifier: :plutonium},
+          %Microchip{identifier: :strontium}
+        ]),
+        Floor.new([
+          %Generator{identifier: :promethium},
+          %Microchip{identifier: :promethium},
+          %Generator{identifier: :ruthenium},
+          %Microchip{identifier: :ruthenium}
+        ]),
+        Floor.new([])
+      ]
+    }
+  end
+
+  def get_initial_state(:part_b) do
     # hardcoded the initial state since parsing the input is not the challanging
     # part of this puzzle..
     %State{
@@ -49,7 +77,11 @@ defmodule Day11 do
           %Generator{identifier: :thulium},
           %Microchip{identifier: :thulium},
           %Generator{identifier: :plutonium},
-          %Generator{identifier: :strontium}
+          %Generator{identifier: :strontium},
+          %Microchip{identifier: :elerium},
+          %Generator{identifier: :elerium},
+          %Microchip{identifier: :dilithium},
+          %Generator{identifier: :dilithium}
         ]),
         Floor.new([
           %Microchip{identifier: :plutonium},
