@@ -79,13 +79,28 @@ defmodule State do
   and the contents of the various floors. The end result is a SHA265 hash of these combined.
   """
   def hash(%State{} = state) do
-    # hash function to make a relatively cheap hash of the passed in datastructure.
-    floors =
-      Enum.map(Enum.with_index(state.floors), fn {floor, floor_no} ->
-        "F#{floor_no}:#{Hashable.hash(floor)}"
+    # because we actually should emphasise on *pairs* more then on floors...                                                                                
+    # We're transforming the state into a hash of pairs where it treats the pairs                                                                           
+    # itself as interchangeable.                                                                                                                            
+    items_with_floor_numbers =
+      state.floors
+      |> Enum.with_index()
+      |> Enum.flat_map(fn {floor, floor_number} ->
+        Map.get(floor, :slots) |> Enum.map(fn item -> {floor_number, item} end)
       end)
 
-    Base.encode16(:crypto.hash(:sha256, "#{state.elevator_location}:#{floors}"))
+    items_with_floor_numbers =
+      Enum.sort_by(items_with_floor_numbers, fn row ->
+        elem(row, 1).identifier
+      end)
+
+    pairs =
+      items_with_floor_numbers
+      |> Enum.chunk_every(2)
+      |> Enum.map(fn [a, b] -> "#{elem(a, 0)}" <> "#{elem(b, 0)}" end)
+      |> Enum.sort()
+
+    "#{state.elevator_location}#{Enum.join(pairs)}"
   end
 
   # `next_states/1` returns, given a state, all its valid next states.
@@ -149,12 +164,24 @@ defmodule State do
         wrap_action(:up, moveable_items)
 
       3 ->
-        # When we're at the top floor - we can only move down.
-        wrap_action(:down, moveable_items)
+        # When we're at the top floor - we can only move down. Unless the 
+        # floor below is already cleared
+        if floor_below_empty?(state) do
+          []
+        else
+          wrap_action(:down, moveable_items)
+        end
 
       _ ->
-        # every other floor since we can go up and down from here.
-        wrap_action(:up, moveable_items) ++ wrap_action(:down, moveable_items)
+        # every other floor since we can go up and down from here. Unless
+        # floor below is already cleared.
+        actions = wrap_action(:up, moveable_items)
+
+        if floor_below_empty?(state) do
+          actions
+        else
+          actions ++ wrap_action(:down, moveable_items)
+        end
     end
   end
 
@@ -166,5 +193,14 @@ defmodule State do
 
   defp get_current_floor(%State{floors: floors, elevator_location: elevator_location}) do
     Enum.at(floors, elevator_location)
+  end
+
+  defp floor_below_empty?(%State{floors: floors, elevator_location: elevator_location}) do
+    if elevator_location >= 1 do
+      floor = Enum.at(floors, elevator_location - 1)
+      Floor.is_empty?(floor)
+    else
+      true
+    end
   end
 end
