@@ -17,6 +17,7 @@ This is my attempt at solving [Advent Of Code 2016](http://adventofcode.com/2016
 - [Day 9](advent-of-code-2016/day_09)
 - [Day 10](advent-of-code-2016/day_10)
 - [Day 11](advent-of-code-2016/day_11)
+- [Day 12](advent-of-code-2016/day_12)
 
 ## /r/dailyprogrammer
 
