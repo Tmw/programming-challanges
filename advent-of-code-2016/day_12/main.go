@@ -12,7 +12,8 @@ import (
 type Reg string
 
 type Instruction interface {
-	exec(c *CPU)
+	// private method without any implementation to form a sum type of instructions.
+	instr()
 }
 
 type SourceType int
@@ -33,7 +34,7 @@ func (r RegOrLiteral) Value(c *CPU) int32 {
 		return r.lit
 	}
 
-	return c.RegisterValue(r.reg)
+	return c.registerValue(r.reg)
 }
 
 type InstructionCpy struct {
@@ -41,42 +42,26 @@ type InstructionCpy struct {
 	dest Reg
 }
 
-func (i InstructionCpy) exec(c *CPU) {
-	val := i.src.Value(c)
-	c.SetRegisterValue(i.dest, val)
-}
+func (InstructionCpy) instr() {}
 
 type InstructionInc struct {
 	register Reg
 }
 
-func (i InstructionInc) exec(c *CPU) {
-	c.RegisterInc(i.register)
-}
+func (InstructionInc) instr() {}
 
 type InstructionDec struct {
 	register Reg
 }
 
-func (i InstructionDec) exec(c *CPU) {
-	c.RegisterDec(i.register)
-}
+func (InstructionDec) instr() {}
 
 type InstructionJnz struct {
 	src    RegOrLiteral
 	offset int
 }
 
-func (i InstructionJnz) exec(c *CPU) {
-	val := i.src.Value(c)
-	if val == 0 {
-		return
-	}
-
-	// subtract one here because the first step after execution
-	// is to increase the instruction counter.
-	c.Jump(i.offset - 1)
-}
+func (InstructionJnz) instr() {}
 
 type CPU struct {
 	ip        int
@@ -87,7 +72,32 @@ type CPU struct {
 func (c *CPU) Run() {
 	for c.ip < len(c.program) {
 		ins := c.program[c.ip]
-		ins.exec(c)
+
+		switch ins := ins.(type) {
+		case *InstructionCpy:
+			val := ins.src.Value(c)
+			c.setRegisterValue(ins.dest, val)
+
+		case *InstructionJnz:
+			val := ins.src.Value(c)
+			if val == 0 {
+				break
+			}
+
+			// subtract one here because the first step after execution
+			// is to increase the instruction counter.
+			c.jump(ins.offset - 1)
+
+		case *InstructionInc:
+			c.registerInc(ins.register)
+
+		case *InstructionDec:
+			c.registerDec(ins.register)
+
+		default:
+			panic("unknown ins")
+		}
+
 		c.ip++
 	}
 }
@@ -100,23 +110,23 @@ func NewCPU(program []Instruction) *CPU {
 	}
 }
 
-func (c *CPU) RegisterValue(reg Reg) int32 {
+func (c *CPU) registerValue(reg Reg) int32 {
 	return c.registers[reg]
 }
 
-func (c *CPU) SetRegisterValue(reg Reg, val int32) {
+func (c *CPU) setRegisterValue(reg Reg, val int32) {
 	c.registers[reg] = val
 }
 
-func (c *CPU) RegisterInc(reg Reg) {
+func (c *CPU) registerInc(reg Reg) {
 	c.registers[reg]++
 }
 
-func (c *CPU) RegisterDec(reg Reg) {
+func (c *CPU) registerDec(reg Reg) {
 	c.registers[reg]--
 }
 
-func (c *CPU) Jump(ipOffset int) {
+func (c *CPU) jump(ipOffset int) {
 	c.ip += ipOffset
 }
 
@@ -180,7 +190,7 @@ func printIns(ins Instruction) {
 
 type InvalidInstruction struct{}
 
-func (i InvalidInstruction) exec(c *CPU) {}
+func (InvalidInstruction) instr() {}
 
 func parseLine(line []string) (Instruction, error) {
 	switch line[0] {
