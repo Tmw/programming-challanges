@@ -1,2 +1,4 @@
-github.com/tmw/pathfind v0.0.0-20240102134012-6ed9b1ca354c h1:1LLxGF7H6qMs84r5OPMQF3zeC2o939kfzuE2RRWcR7k=
-github.com/tmw/pathfind v0.0.0-20240102134012-6ed9b1ca354c/go.mod h1:tTr3qEy+PiiniQ+0/1XXZur+ioAfbj/gMB5OdvN6ZW0=
+github.com/tmw/pathfind v0.0.0-20240103100415-d0940937eff6 h1:2dBX2tOIatisBMWSEmxo0GaII6D/bUxTk9X+ADzCWNI=
+github.com/tmw/pathfind v0.0.0-20240103100415-d0940937eff6/go.mod h1:tTr3qEy+PiiniQ+0/1XXZur+ioAfbj/gMB5OdvN6ZW0=
+github.com/tmw/pathfind v0.0.0-20240103150021-916812710649 h1:4utbkcoKurTrfva7BHRyknZ4UZDp3eMIKZi2Ys5EmVQ=
+github.com/tmw/pathfind v0.0.0-20240103150021-916812710649/go.mod h1:tTr3qEy+PiiniQ+0/1XXZur+ioAfbj/gMB5OdvN6ZW0=

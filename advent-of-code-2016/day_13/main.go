@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"math/bits"
+	"slices"
 
 	"github.com/tmw/pathfind"
 )
@@ -40,30 +41,67 @@ func (c Coordinate) Neighbours() []Coordinate {
 	return n
 }
 
-func main() {
-	start := Coordinate{1, 1}
-	finish := Coordinate{31, 39}
+func partOne() {
+	var (
+		start  = Coordinate{1, 1}
+		finish = Coordinate{31, 39}
+	)
 
 	f := pathfind.NewAStar[Coordinate](start, &pathfind.FuncAdapter[Coordinate]{
 		NeighboursFn: func(c Coordinate) []Coordinate {
-			return c.Neighbours()
+			n := c.Neighbours()
+			return slices.DeleteFunc(n, func(c Coordinate) bool {
+				return !isWalkable(c.x, c.y, ActualSeed)
+			})
 		},
 
-		DistanceToFinishFn: func(c Coordinate) int {
+		CostToFinishFn: func(c Coordinate) int {
 			return c.Dist(finish)
 		},
 
-		IsCellWalkableFn: func(c Coordinate) bool {
-			return isWalkable(c.x, c.y, ActualSeed)
-		},
-
-		IsCellFinishFn: func(c Coordinate) bool {
+		IsFinishFn: func(c Coordinate) bool {
 			return c == finish
 		},
 	})
 
 	path := f.Walk()
-	fmt.Printf("steps = %d\n", len(path))
+	fmt.Printf("answer part one = %d\n", len(path))
+}
+
+func partTwo() {
+	var (
+		start   = Coordinate{1, 1}
+		finish  = Coordinate{31, 39}
+		visited = make(map[Coordinate]struct{})
+	)
+
+	f := pathfind.NewBFS[Coordinate](start, &pathfind.FuncAdapter[Coordinate]{
+		NeighboursFn: func(c Coordinate) []Coordinate {
+			n := c.Neighbours()
+			return slices.DeleteFunc(n, func(c Coordinate) bool {
+				return !isWalkable(c.x, c.y, ActualSeed)
+			})
+		},
+
+		// Note: Unused for BFS.
+		CostToFinishFn: func(c Coordinate) int { return -1 },
+
+		IsFinishFn: func(c Coordinate) bool {
+			return c == finish
+		},
+	})
+
+	f.MaxCost = 50
+	f.Walk()
+
+	for _, e := range f.EventLog() {
+		if v, ok := e.(pathfind.EventCandidateVisited[Coordinate]); ok {
+			visited[v.CandidateID] = struct{}{}
+		}
+	}
+
+	// pull visited nodes from event log
+	fmt.Printf("answer part two = %d\n", len(visited))
 }
 
 func isWalkable(x, y, seed int) bool {
@@ -76,4 +114,9 @@ func isWalkable(x, y, seed int) bool {
 	walkable := bits.OnesCount(uint(key))%2 == 0
 	floor[cacheKey] = walkable
 	return walkable
+}
+
+func main() {
+	partOne()
+	partTwo()
 }
